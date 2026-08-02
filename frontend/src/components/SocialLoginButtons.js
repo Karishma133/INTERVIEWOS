@@ -1,5 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { Github } from "lucide-react";
+
+// Same env override the rest of the app's API calls use, minus the
+// trailing /api — these are full-page redirects, not fetch() calls.
+const API_ROOT = (process.env.REACT_APP_API_URL || "http://localhost:5000/api").replace(/\/api\/?$/, "");
 
 function GoogleIcon(props) {
   return (
@@ -12,39 +16,25 @@ function GoogleIcon(props) {
   );
 }
 
-/**
- * Google / GitHub buttons for the auth pages. The backend doesn't have
- * OAuth wired up yet, so these surface an honest "coming soon" note
- * instead of pretending to authenticate.
- */
+/** Google / GitHub buttons for the auth pages. Clicking does a full-page
+ * redirect to the backend, which bounces to the provider, then back to
+ * /login?oauth_token=... — Login.js picks that up and finishes the
+ * session the same way a normal email/password login does. */
 export default function SocialLoginButtons() {
-  const [notice, setNotice] = useState("");
-
-  const handleClick = (provider) => {
-    setNotice(`${provider} sign-in is coming soon — use email for now.`);
-    window.clearTimeout(handleClick._t);
-    handleClick._t = window.setTimeout(() => setNotice(""), 3500);
-  };
-
   return (
-    <div>
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          onClick={() => handleClick("Google")}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-navy-200 dark:border-navy-700 bg-white dark:bg-navy-900 px-4 py-2.5 text-sm font-medium text-navy-700 dark:text-gray-200 hover:bg-navy-50 dark:hover:bg-navy-800 hover:border-navy-300 transition-colors"
-        >
-          <GoogleIcon /> Google
-        </button>
-        <button
-          type="button"
-          onClick={() => handleClick("GitHub")}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-navy-200 dark:border-navy-700 bg-white dark:bg-navy-900 px-4 py-2.5 text-sm font-medium text-navy-700 dark:text-gray-200 hover:bg-navy-50 dark:hover:bg-navy-800 hover:border-navy-300 transition-colors"
-        >
-          <Github size={17} /> GitHub
-        </button>
-      </div>
-      {notice && <p className="mt-2 text-xs text-navy-400 text-center">{notice}</p>}
+    <div className="grid grid-cols-2 gap-3">
+      <a
+        href={`${API_ROOT}/api/auth/google`}
+        className="inline-flex items-center justify-center gap-2 rounded-xl border border-navy-200 dark:border-navy-700 bg-white dark:bg-navy-900 px-4 py-2.5 text-sm font-medium text-navy-700 dark:text-gray-200 hover:bg-navy-50 dark:hover:bg-navy-800 hover:border-navy-300 transition-colors"
+      >
+        <GoogleIcon /> Google
+      </a>
+      <a
+        href={`${API_ROOT}/api/auth/github`}
+        className="inline-flex items-center justify-center gap-2 rounded-xl border border-navy-200 dark:border-navy-700 bg-white dark:bg-navy-900 px-4 py-2.5 text-sm font-medium text-navy-700 dark:text-gray-200 hover:bg-navy-50 dark:hover:bg-navy-800 hover:border-navy-300 transition-colors"
+      >
+        <Github size={17} /> GitHub
+      </a>
     </div>
   );
 }

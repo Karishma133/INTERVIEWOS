@@ -5,8 +5,15 @@ const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    password: { type: String, required: true },
+    // Not required — OAuth accounts (Google/GitHub) never set a password.
+    // Local registration still enforces this at the controller level.
+    password: { type: String },
     techStack: { type: [String], default: [] }, // e.g. ["MERN", "C#", ".NET"]
+
+    // Set when the account was created/linked via a social provider.
+    // sparse so multiple users without one don't collide on `null`.
+    googleId: { type: String, unique: true, sparse: true },
+    githubId: { type: String, unique: true, sparse: true },
 
     // Rolling difficulty state used by the adaptive engine
     currentLevel: {
@@ -60,6 +67,7 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.matchPassword = function (enteredPassword) {
+  if (!this.password) return Promise.resolve(false); // OAuth-only account, no local password to check
   return bcrypt.compare(enteredPassword, this.password);
 };
 
