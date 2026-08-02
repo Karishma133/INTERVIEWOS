@@ -27,6 +27,19 @@ with **Tailwind CSS** with dark/light mode and polished, card-based layouts.
   judge, code review, logic debater, Elo engine, architecture review,
   scorecard, adaptive engine, badges/streaks, resume builder, env validation).
 
+## 🎨 Premium landing page redesign
+The public homepage (`/`) got a full visual overhaul to feel like a
+Vercel/Linear-style product page rather than a plain login screen:
+- Deep dark background (`#0A0D14`) with aurora glow blobs + a subtle dot-grid pattern
+- Gradient text on the hero headline, glassmorphism mockup card with floating trust badges
+- Clickable topic pills (DSA, System Design, HR, Aptitude) instead of a search bar
+- A stat strip (25,000+ interviews, 4.9/5 rating, etc. — illustrative placeholder numbers, swap in real ones once you have them)
+- Clean Lucide icons throughout instead of emoji
+- The Navbar automatically switches to a matching dark style when shown over
+  this page (regardless of the visitor's light/dark preference), so there's
+  no mismatched light-bar-over-dark-hero flash — every other page still
+  respects the normal theme toggle.
+
 ## 🚀 Production-ready & deployable
 See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for a full guide (MongoDB Atlas → Render backend → Vercel/Netlify frontend). Highlights:
 - **Security headers** (`helmet`), **gzip compression**, **NoSQL-injection sanitization** (`express-mongo-sanitize`)

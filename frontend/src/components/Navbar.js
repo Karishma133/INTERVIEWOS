@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { clearSession, getCurrentUser } from "../services/api";
 import { useTheme } from "../context/ThemeContext";
 
@@ -21,23 +21,24 @@ const INSIGHTS_LINKS = [
 
 function NavDropdown({ label, links, openMenu, setOpenMenu }) {
   const isOpen = openMenu === label;
-  const dropdownRef = useRef(null);
+  const containerRef = useRef(null);
 
-  // Click outside hone par dropdown close karna (onBlur ki jagah reliable tareeka)
+  // Reliable "click outside to close" — avoids the onBlur+setTimeout race
+  // condition where a click on a dropdown Link could get swallowed by the
+  // menu closing before React Router's navigation registered.
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        if (isOpen) {
-          setOpenMenu(null);
-        }
+    if (!isOpen) return;
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setOpenMenu(null);
       }
-    }
+    };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, setOpenMenu]);
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative" ref={containerRef}>
       <button
         onClick={() => setOpenMenu(isOpen ? null : label)}
         className={`hidden md:flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
@@ -46,14 +47,13 @@ function NavDropdown({ label, links, openMenu, setOpenMenu }) {
       >
         {label} <span className={`text-[10px] transition-transform ${isOpen ? "rotate-180" : ""}`}>▾</span>
       </button>
-
       {isOpen && (
         <div className="absolute top-full left-0 mt-1 w-52 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-card-hover py-1.5 z-50">
           {links.map((l) => (
             <Link
               key={l.to}
               to={l.to}
-              onClick={() => setOpenMenu(null)} // <-- FIX: Click karte hi state close hogi aur page navigate hoga
+              onClick={() => setOpenMenu(null)}
               className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
             >
               <span>{l.icon}</span> {l.label}
@@ -67,10 +67,29 @@ function NavDropdown({ label, links, openMenu, setOpenMenu }) {
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = getCurrentUser();
   const { theme, toggleTheme } = useTheme();
   const [openMenu, setOpenMenu] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Glassmorphism kicks in once the page has scrolled a little — the bar
+  // starts near-transparent over the hero and blurs/solidifies as content
+  // scrolls underneath it.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // The public landing page ("/") always renders a premium dark hero
+  // regardless of the app's light/dark toggle — so the navbar over it
+  // needs to always be dark too, or a light-mode visitor sees a white
+  // bar over a black hero (looks broken). Every other page still
+  // respects the normal theme toggle.
+  const isLandingHero = !user && location.pathname === "/";
 
   const handleLogout = () => {
     clearSession();
@@ -88,10 +107,23 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-40 bg-white/80 dark:bg-gray-950/80 backdrop-blur border-b border-gray-100 dark:border-gray-800">
+    <nav
+      className={`sticky top-0 z-40 border-b transition-all duration-300 ${
+        isLandingHero
+          ? scrolled
+            ? "bg-navy-950/75 backdrop-blur-xl border-navy-800/70 shadow-lg shadow-black/10"
+            : "bg-navy-950/20 backdrop-blur-sm border-transparent"
+          : scrolled
+            ? "bg-white/75 dark:bg-gray-950/75 backdrop-blur-xl border-gray-100 dark:border-gray-800 shadow-sm"
+            : "bg-white/40 dark:bg-gray-950/40 backdrop-blur-sm border-transparent"
+      }`}
+    >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2 font-extrabold text-xl text-primary-600 shrink-0">
-          <span className="w-8 h-8 rounded-lg bg-primary-600 text-white flex items-center justify-center text-sm">IO</span>
+        <Link
+          to={user ? "/dashboard" : "/"}
+          className={`flex items-center gap-2 font-display font-bold text-xl shrink-0 ${isLandingHero ? "text-white" : "text-garnet-500"}`}
+        >
+          <span className="w-8 h-8 rounded-lg bg-garnet-500 text-white flex items-center justify-center text-sm">IO</span>
           <span className="hidden sm:inline">InterviewOS</span>
         </Link>
 
@@ -137,13 +169,27 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <button
               onClick={toggleTheme}
-              className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+              className={`w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 ${isLandingHero ? "text-gray-400 hover:!bg-gray-800" : "text-gray-500"}`}
               aria-label="Toggle dark mode"
             >
               {theme === "dark" ? "☀️" : "🌙"}
             </button>
-            <Link to="/login" className="btn-outline !py-1.5 !px-3">Login</Link>
-            <Link to="/register" className="btn-primary !py-1.5 !px-3">Sign up</Link>
+            <Link
+              to="/login"
+              className={isLandingHero
+                ? "inline-flex items-center justify-center gap-2 rounded-lg border border-navy-700 px-4 py-2.5 text-sm font-semibold text-gray-200 hover:bg-navy-800 transition-colors"
+                : "btn-outline !py-1.5 !px-3"}
+            >
+              Login
+            </Link>
+            <Link
+              to="/register"
+              className={isLandingHero
+                ? "inline-flex items-center justify-center gap-2 rounded-lg bg-cta-gradient hover:bg-cta-gradient-hover px-4 py-2.5 text-sm font-semibold text-white shadow-glow-garnet transition-all"
+                : "btn-primary !py-1.5 !px-3"}
+            >
+              Sign up
+            </Link>
           </div>
         )}
       </div>
