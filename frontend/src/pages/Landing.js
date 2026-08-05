@@ -59,46 +59,45 @@ export default function Landing() {
 
   return (
     <div className="bg-[#F5F6F8] dark:bg-navy-950">
-      {/* ---------------- HERO ---------------- */}
-      <section className="relative overflow-hidden">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-20 sm:pt-20 sm:pb-28 grid lg:grid-cols-12 gap-14 items-center">
+      {/* ---------------- HERO (Fit to Screen) ---------------- */}
+      <section className="relative overflow-hidden min-h-[85vh] flex items-center">
+        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-12 grid lg:grid-cols-12 gap-10 items-center">
+          
           {/* Left: thesis */}
           <div className="lg:col-span-6 animate-risein">
-            <span className="inline-flex items-center gap-2 rounded-full border border-garnet-500/25 bg-garnet-500/[0.06] px-3.5 py-1.5 text-xs font-semibold text-garnet-600 dark:text-garnet-400 mb-6">
+            <span className="inline-flex items-center gap-2 rounded-full border border-garnet-500/25 bg-garnet-500/[0.06] px-3 py-1 text-[11px] font-semibold text-garnet-600 dark:text-garnet-400 mb-4">
               <span className="w-1.5 h-1.5 rounded-full bg-garnet-500" />
               Free · No AI subscription required
             </span>
 
-            {/* Changed Heading Size and Line Height here */}
-            <h1 className="font-display text-3xl sm:text-4xl xl:text-[2.8rem] font-bold tracking-tight leading-tight text-navy-900 dark:text-white">
+            <h1 className="font-display text-3xl sm:text-4xl xl:text-[2.6rem] font-bold tracking-tight leading-tight text-navy-900 dark:text-white">
               Your interview readiness,
               <br />
               read like an instrument.
             </h1>
 
-            {/* Changed Paragraph Width to max-w-md and adjusted text size */}
-            <p className="mt-5 text-base sm:text-lg text-navy-600/90 dark:text-navy-200 leading-relaxed max-w-md">
+            <p className="mt-4 text-sm sm:text-base text-navy-600/90 dark:text-navy-200 leading-relaxed max-w-md">
               Five rounds a real hiring process runs you through — DSA, system design,
               behavioral, communication, aptitude — scored live on one panel, by rules
               you can defend in the room instead of a model you can't.
             </p>
 
-            <div className="mt-8 flex items-center gap-3 flex-wrap">
-              <Link to="/register" className="inline-flex items-center gap-2 rounded-xl bg-cta-gradient hover:bg-cta-gradient-hover px-6 py-3 text-sm font-semibold text-white shadow-glow-garnet hover:shadow-glow-garnet-lg hover:-translate-y-0.5 transition-all duration-200">
+            <div className="mt-6 flex items-center gap-3 flex-wrap">
+              <Link to="/register" className="inline-flex items-center gap-2 rounded-xl bg-cta-gradient hover:bg-cta-gradient-hover px-5 py-2.5 text-sm font-semibold text-white shadow-glow-garnet hover:shadow-glow-garnet-lg hover:-translate-y-0.5 transition-all duration-200">
                 Start Practicing <ArrowRight size={16} />
               </Link>
-              <Link to="/login" className="inline-flex items-center gap-2 rounded-xl border border-navy-200 dark:border-navy-700 px-6 py-3 text-sm font-semibold text-navy-700 dark:text-navy-200 hover:bg-navy-50 dark:hover:bg-navy-800 transition-colors">
+              <Link to="/login" className="inline-flex items-center gap-2 rounded-xl border border-navy-200 dark:border-navy-700 px-5 py-2.5 text-sm font-semibold text-navy-700 dark:text-navy-200 hover:bg-navy-50 dark:hover:bg-navy-800 transition-colors">
                 See how scoring works
               </Link>
             </div>
 
-            <div className="mt-9 flex items-center gap-6">
+            <div className="mt-6 flex items-center gap-5">
               {SCORECARD.slice(0, 4).map((s) => (
-                <Link key={s.title} to={s.to} className="group flex flex-col items-center gap-1.5">
-                  <span className="w-9 h-9 rounded-lg bg-navy-900 dark:bg-navy-800 flex items-center justify-center group-hover:bg-garnet-600 transition-colors">
-                    <s.icon size={16} className="text-white" />
+                <Link key={s.title} to={s.to} className="group flex flex-col items-center gap-1">
+                  <span className="w-8 h-8 rounded-lg bg-navy-900 dark:bg-navy-800 flex items-center justify-center group-hover:bg-garnet-600 transition-colors">
+                    <s.icon size={14} className="text-white" />
                   </span>
-                  <span className="text-[11px] text-navy-500 dark:text-navy-400 group-hover:text-garnet-500 transition-colors">{s.title.split(" ")[0]}</span>
+                  <span className="text-[10px] text-navy-500 dark:text-navy-400 group-hover:text-garnet-500 transition-colors">{s.title.split(" ")[0]}</span>
                 </Link>
               ))}
             </div>
@@ -106,21 +105,21 @@ export default function Landing() {
 
           {/* Right: signature — the instrument panel */}
           <div className="lg:col-span-6 animate-risein" style={{ animationDelay: "0.12s" }}>
-            <div className="relative rounded-[28px] bg-navy-950 shadow-panel p-6 sm:p-8">
-              <div className="flex items-center justify-between mb-5">
+            <div className="relative rounded-[24px] bg-navy-950 shadow-panel p-5 sm:p-6">
+              <div className="flex items-center justify-between mb-4">
                 <div>
-                  <p className="text-[11px] uppercase tracking-wider text-navy-400 font-semibold">Candidate Readiness</p>
-                  <p className="font-display text-xl font-semibold text-white mt-0.5">Panel — Live Scorecard</p>
+                  <p className="text-[10px] uppercase tracking-wider text-navy-400 font-semibold">Candidate Readiness</p>
+                  <p className="font-display text-lg font-semibold text-white mt-0.5">Panel — Live Scorecard</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-mono text-2xl font-semibold text-gold-400">1642</p>
-                  <p className="text-[11px] text-mint-400 font-medium">Elo · +18 this week</p>
+                  <p className="font-mono text-xl font-semibold text-gold-400">1642</p>
+                  <p className="text-[10px] text-mint-400 font-medium">Elo · +18 this week</p>
                 </div>
               </div>
 
               {/* Radar */}
               <div className="relative">
-                <svg viewBox="0 0 320 320" className="w-full h-auto overflow-visible">
+                <svg viewBox="0 0 320 320" className="w-full h-auto max-h-[280px] mx-auto overflow-visible">
                   <defs>
                     <filter id="neonGlow" x="-60%" y="-60%" width="220%" height="220%">
                       <feGaussianBlur stdDeviation="5" result="blur1" />
@@ -162,7 +161,6 @@ export default function Landing() {
 
                   {DATA_POINTS.map((p, i) => (
                     <g key={i}>
-                      {/* invisible larger hit-area for easier hover */}
                       <circle
                         cx={p[0]} cy={p[1]} r="14" fill="transparent"
                         className="cursor-pointer"
@@ -208,12 +206,12 @@ export default function Landing() {
                 )}
               </div>
 
-              <div className="mt-4 pt-4 border-t border-navy-800 flex items-center justify-between">
-                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-mint-400">
-                  <Flame size={13} /> 12-day streak
+              <div className="mt-3 pt-3 border-t border-navy-800 flex items-center justify-between">
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-mint-400">
+                  <Flame size={12} /> 12-day streak
                 </span>
-                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-gold-400">
-                  <Trophy size={13} /> Top 5% this month
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-gold-400">
+                  <Trophy size={12} /> Top 5% this month
                 </span>
               </div>
             </div>
@@ -223,18 +221,18 @@ export default function Landing() {
 
       {/* ---------------- SCORECARD / ROUNDS ---------------- */}
       <section className="bg-white dark:bg-navy-900 border-y border-navy-100 dark:border-navy-800">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <p className="text-xs font-semibold uppercase tracking-wider text-garnet-500 mb-3">What the panel measures</p>
-          <h2 className="font-display text-2xl sm:text-3xl font-bold text-navy-900 dark:text-white mb-10 max-w-2xl">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <p className="text-xs font-semibold uppercase tracking-wider text-garnet-500 mb-2">What the panel measures</p>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-navy-900 dark:text-white mb-8 max-w-2xl">
             Four categories, one readiness score — mapped straight from the radar above.
           </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {SCORECARD.map((s) => (
               <Link key={s.title} to={s.to} className="group rounded-2xl border border-navy-100 dark:border-navy-800 p-5 hover:border-garnet-400 hover:shadow-card-hover transition-all">
                 <span className="w-10 h-10 rounded-lg bg-navy-900 dark:bg-navy-800 flex items-center justify-center mb-4 group-hover:bg-garnet-600 transition-colors">
                   <s.icon size={17} className="text-white" />
                 </span>
-                <h3 className="font-display font-semibold text-navy-900 dark:text-gray-100 mb-1.5">{s.title}</h3>
+                <h3 className="font-display font-semibold text-navy-900 dark:text-gray-100 mb-1">{s.title}</h3>
                 <p className="text-sm text-navy-500 dark:text-navy-400 leading-relaxed">{s.desc}</p>
               </Link>
             ))}
@@ -243,12 +241,12 @@ export default function Landing() {
       </section>
 
       {/* ---------------- FEATURES ---------------- */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <p className="text-xs font-semibold uppercase tracking-wider text-garnet-500 mb-3">Under the panel</p>
-        <h2 className="font-display text-2xl sm:text-3xl font-bold text-navy-900 dark:text-white mb-10 max-w-2xl">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <p className="text-xs font-semibold uppercase tracking-wider text-garnet-500 mb-2">Under the panel</p>
+        <h2 className="font-display text-2xl sm:text-3xl font-bold text-navy-900 dark:text-white mb-8 max-w-2xl">
           Every reading on the instrument traces back to a rule you can name.
         </h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {FEATURES.map((f) => (
             <div
               key={f.title}
@@ -271,17 +269,17 @@ export default function Landing() {
 
       {/* ---------------- FINAL CTA ---------------- */}
       <section className="relative overflow-hidden bg-navy-950">
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-white mb-4">
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-white mb-3">
             Put your readiness on the panel.
           </h2>
           <p className="text-navy-300 mb-8 max-w-xl mx-auto">
             Register, take your first adaptive round, and watch the radar fill in from there.
           </p>
-          <Link to="/register" className="inline-flex items-center gap-2 rounded-xl bg-cta-gradient hover:bg-cta-gradient-hover px-7 py-3.5 text-base font-semibold text-white shadow-glow-garnet hover:shadow-glow-garnet-lg hover:-translate-y-0.5 transition-all duration-200">
+          <Link to="/register" className="inline-flex items-center gap-2 rounded-xl bg-cta-gradient hover:bg-cta-gradient-hover px-6 py-3 text-base font-semibold text-white shadow-glow-garnet hover:shadow-glow-garnet-lg hover:-translate-y-0.5 transition-all duration-200">
             Create free account <ArrowRight size={16} />
           </Link>
-          <p className="mt-4 text-xs text-navy-500">No credit card. No external AI subscription. Runs on your own database.</p>
+          <p className="mt-4 text-[11px] text-navy-500">No credit card. No external AI subscription. Runs on your own database.</p>
         </div>
       </section>
     </div>
