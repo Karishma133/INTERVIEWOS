@@ -69,13 +69,15 @@ export default function Landing() {
               Free · No AI subscription required
             </span>
 
-            <h1 className="font-display text-4xl sm:text-5xl xl:text-[3.4rem] font-bold tracking-tight leading-[1.08] text-navy-900 dark:text-white">
+            {/* Changed Heading Size and Line Height here */}
+            <h1 className="font-display text-3xl sm:text-4xl xl:text-[2.8rem] font-bold tracking-tight leading-tight text-navy-900 dark:text-white">
               Your interview readiness,
               <br />
               read like an instrument.
             </h1>
 
-            <p className="mt-5 text-lg text-navy-600/90 dark:text-navy-200 leading-relaxed max-w-lg">
+            {/* Changed Paragraph Width to max-w-md and adjusted text size */}
+            <p className="mt-5 text-base sm:text-lg text-navy-600/90 dark:text-navy-200 leading-relaxed max-w-md">
               Five rounds a real hiring process runs you through — DSA, system design,
               behavioral, communication, aptitude — scored live on one panel, by rules
               you can defend in the room instead of a model you can't.
