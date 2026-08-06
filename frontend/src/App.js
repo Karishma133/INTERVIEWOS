@@ -21,10 +21,12 @@ import AptitudeQuiz from "./pages/AptitudeQuiz";
 import SituationalJudgment from "./pages/SituationalJudgment";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import CompanyPrep from "./pages/CompanyPrep";
+import Settings from "./pages/Settings";
 import VerifyEmail from "./pages/VerifyEmail";
 import NotFound from "./pages/NotFound";
 import { getCurrentUser } from "./services/api";
 import { ThemeProvider } from "./context/ThemeContext";
+import { ToastProvider } from "./context/ToastContext";
 
 function PrivateRoute({ children }) {
   const user = getCurrentUser();
@@ -35,6 +37,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
+        <ToastProvider>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <Navbar />
           <Routes>
@@ -59,11 +62,13 @@ export default function App() {
             <Route path="/questions" element={<PrivateRoute><Questions /></PrivateRoute>} />
             <Route path="/leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
             <Route path="/multiplayer" element={<PrivateRoute><Multiplayer /></PrivateRoute>} />
+            <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
 
             {/* Catch-all — must stay last */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        </ToastProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

@@ -35,6 +35,9 @@ const userSchema = new mongoose.Schema(
     // Global Developer Elo Rating (chess-style competitive rating)
     eloRating: { type: Number, default: 1200 },
 
+    // Questions the user has saved to revisit later
+    bookmarkedQuestions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
+
     // Shareable public profile URL slug, e.g. interviewos.dev/u/karishma-a1b2
     publicSlug: { type: String, unique: true, sparse: true },
 

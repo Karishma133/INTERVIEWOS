@@ -1,14 +1,42 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { api, saveSession } from "../services/api";
 import FloatingInput from "../components/FloatingInput";
 import SocialLoginButtons from "../components/SocialLoginButtons";
+import { useToast } from "../context/ToastContext";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const toast = useToast();
+
+  // Google/GitHub land back here as /login?oauth_token=... (or
+  // ?oauth_error=...) after the backend finishes the provider handshake.
+  useEffect(() => {
+    const oauthToken = searchParams.get("oauth_token");
+    const oauthError = searchParams.get("oauth_error");
+    if (oauthToken) {
+      (async () => {
+        try {
+          localStorage.setItem("io_token", oauthToken); // api.me() reads the token from here
+          const me = await api.me();
+          saveSession({ token: oauthToken, user: me });
+          toast.success(`Welcome back, ${me.name?.split(" ")[0] || "there"}!`);
+          navigate("/dashboard", { replace: true });
+        } catch {
+          localStorage.removeItem("io_token");
+          setError("Social login succeeded but fetching your profile failed. Please try again.");
+        }
+      })();
+    } else if (oauthError) {
+      setError(oauthError);
+      toast.error(oauthError);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,6 +44,7 @@ export default function Login() {
     try {
       const data = await api.login(form);
       saveSession({ token: data.token, user: data });
+      toast.success(`Welcome back, ${data.name?.split(" ")[0] || "there"}!`);
       navigate("/dashboard");
     } catch (err) {
       setError(err.message);

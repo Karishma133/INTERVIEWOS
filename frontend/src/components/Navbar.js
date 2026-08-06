@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Settings as SettingsIcon } from "lucide-react";
 import { clearSession, getCurrentUser } from "../services/api";
 import { useTheme } from "../context/ThemeContext";
 
@@ -104,6 +105,7 @@ export default function Navbar() {
     ...PRACTICE_LINKS,
     ...COMPETE_LINKS,
     ...INSIGHTS_LINKS,
+    { to: "/settings", label: "Settings", icon: "⚙️" },
   ];
 
   return (
@@ -121,9 +123,9 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link
           to={user ? "/dashboard" : "/"}
-          className={`flex items-center gap-2 font-display font-bold text-xl shrink-0 ${isLandingHero ? "text-white" : "text-garnet-500"}`}
+          className={`flex items-center gap-2 font-display font-bold text-xl shrink-0 ${isLandingHero ? "text-white" : "text-indigo-500"}`}
         >
-          <span className="w-8 h-8 rounded-lg bg-garnet-500 text-white flex items-center justify-center text-sm">IO</span>
+          <span className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-sm">IO</span>
           <span className="hidden sm:inline">InterviewOS</span>
         </Link>
 
@@ -153,6 +155,14 @@ export default function Navbar() {
                 {user.name} · <span className="text-primary-600 font-semibold">{user.currentLevel}</span>
               </Link>
             )}
+
+            <Link
+              to="/settings"
+              title="Settings"
+              className="hidden md:flex w-9 h-9 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              <SettingsIcon size={17} />
+            </Link>
 
             <button onClick={handleLogout} className="hidden md:inline-flex btn-outline !py-1.5 !px-3 ml-1">Logout</button>
 
@@ -185,7 +195,7 @@ export default function Navbar() {
             <Link
               to="/register"
               className={isLandingHero
-                ? "inline-flex items-center justify-center gap-2 rounded-lg bg-cta-gradient hover:bg-cta-gradient-hover px-4 py-2.5 text-sm font-semibold text-white shadow-glow-garnet transition-all"
+                ? "inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all"
                 : "btn-primary !py-1.5 !px-3"}
             >
               Sign up

@@ -70,14 +70,27 @@ const DIFFICULTY_COLORS = {
  * - Footer: "Solve Now" button, right-aligned
  * - Outlined border that highlights to the brand color on hover
  */
-export function ProblemCard({ question, onSolve }) {
+export function ProblemCard({ question, onSolve, bookmarked, onToggleBookmark }) {
   return (
     <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5 hover:border-primary-500 dark:hover:border-primary-500 transition-colors duration-200">
       <div className="flex items-start justify-between gap-2 mb-3">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100 leading-snug">{question.title}</h3>
-        <span className={`badge shrink-0 ${DIFFICULTY_COLORS[question.difficulty] || "bg-gray-100 text-gray-600"}`}>
-          {question.difficulty}
-        </span>
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 leading-snug pr-1">{question.title}</h3>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <span className={`badge ${DIFFICULTY_COLORS[question.difficulty] || "bg-gray-100 text-gray-600"}`}>
+            {question.difficulty}
+          </span>
+          {onToggleBookmark && (
+            <button
+              onClick={() => onToggleBookmark(question)}
+              title={bookmarked ? "Remove bookmark" : "Save for later"}
+              className={`w-6 h-6 flex items-center justify-center rounded-md transition-colors ${
+                bookmarked ? "text-garnet-500" : "text-gray-300 dark:text-gray-600 hover:text-garnet-400"
+              }`}
+            >
+              {bookmarked ? "★" : "☆"}
+            </button>
+          )}
+        </div>
       </div>
 
       <span className="badge bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 mb-3">{question.topic}</span>

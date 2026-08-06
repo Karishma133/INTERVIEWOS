@@ -64,25 +64,30 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-20 sm:pt-20 sm:pb-28 grid lg:grid-cols-12 gap-14 items-center">
           {/* Left: thesis */}
           <div className="lg:col-span-6 animate-risein">
-            <span className="inline-flex items-center gap-2 rounded-full border border-garnet-500/25 bg-garnet-500/[0.06] px-3.5 py-1.5 text-xs font-semibold text-garnet-600 dark:text-garnet-400 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-garnet-500" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-indigo-500/25 bg-indigo-500/[0.06] px-3.5 py-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
               Free · No AI subscription required
             </span>
 
-            <h1 className="font-display text-4xl sm:text-5xl xl:text-[3.4rem] font-bold tracking-tight leading-[1.08] text-navy-900 dark:text-white">
+            {/* Changed Heading Size and Line Height here */}
+            <h1 className="font-display text-3xl sm:text-4xl xl:text-[2.8rem] font-bold tracking-tight leading-tight text-navy-900 dark:text-white">
               Your interview readiness,
               <br />
               read like an instrument.
             </h1>
 
-            <p className="mt-5 text-lg text-navy-600/90 dark:text-navy-200 leading-relaxed max-w-lg">
+            {/* Changed Paragraph Width to max-w-md and adjusted text size */}
+            <p className="mt-5 text-base sm:text-lg text-navy-600/90 dark:text-navy-200 leading-relaxed max-w-md">
               Five rounds a real hiring process runs you through — DSA, system design,
               behavioral, communication, aptitude — scored live on one panel, by rules
               you can defend in the room instead of a model you can't.
             </p>
 
             <div className="mt-8 flex items-center gap-3 flex-wrap">
-              <Link to="/register" className="inline-flex items-center gap-2 rounded-xl bg-cta-gradient hover:bg-cta-gradient-hover px-6 py-3 text-sm font-semibold text-white shadow-glow-garnet hover:shadow-glow-garnet-lg hover:-translate-y-0.5 transition-all duration-200">
+              <Link
+                to="/register"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all duration-200"
+              >
                 Start Practicing <ArrowRight size={16} />
               </Link>
               <Link to="/login" className="inline-flex items-center gap-2 rounded-xl border border-navy-200 dark:border-navy-700 px-6 py-3 text-sm font-semibold text-navy-700 dark:text-navy-200 hover:bg-navy-50 dark:hover:bg-navy-800 transition-colors">
@@ -93,10 +98,10 @@ export default function Landing() {
             <div className="mt-9 flex items-center gap-6">
               {SCORECARD.slice(0, 4).map((s) => (
                 <Link key={s.title} to={s.to} className="group flex flex-col items-center gap-1.5">
-                  <span className="w-9 h-9 rounded-lg bg-navy-900 dark:bg-navy-800 flex items-center justify-center group-hover:bg-garnet-600 transition-colors">
+                  <span className="w-9 h-9 rounded-lg bg-navy-900 dark:bg-navy-800 flex items-center justify-center group-hover:bg-indigo-600 transition-colors">
                     <s.icon size={16} className="text-white" />
                   </span>
-                  <span className="text-[11px] text-navy-500 dark:text-navy-400 group-hover:text-garnet-500 transition-colors">{s.title.split(" ")[0]}</span>
+                  <span className="text-[11px] text-navy-500 dark:text-navy-400 group-hover:text-indigo-500 transition-colors">{s.title.split(" ")[0]}</span>
                 </Link>
               ))}
             </div>
@@ -122,7 +127,7 @@ export default function Landing() {
                   <defs>
                     <filter id="neonGlow" x="-60%" y="-60%" width="220%" height="220%">
                       <feGaussianBlur stdDeviation="5" result="blur1" />
-                      <feFlood floodColor="#D64F66" floodOpacity="0.9" result="color" />
+                      <feFlood floodColor="#6366F1" floodOpacity="0.9" result="color" />
                       <feComposite in="color" in2="blur1" operator="in" result="glow" />
                       <feMerge>
                         <feMergeNode in="glow" />
@@ -140,8 +145,8 @@ export default function Landing() {
 
                   <polygon
                     points={poly(DATA_POINTS)}
-                    fill="rgba(196,41,63,0.22)"
-                    stroke="#D64F66"
+                    fill="rgba(79,68,223,0.22)"
+                    stroke="#6366F1"
                     strokeWidth="2"
                     strokeDasharray="700"
                     filter="url(#neonGlow)"
@@ -151,7 +156,7 @@ export default function Landing() {
                   <polygon
                     points={poly(DATA_POINTS)}
                     fill="none"
-                    stroke="#D64F66"
+                    stroke="#6366F1"
                     strokeWidth="1.5"
                     filter="url(#neonGlow)"
                     className="animate-neonpulse"
@@ -170,7 +175,7 @@ export default function Landing() {
                       <circle
                         cx={p[0]} cy={p[1]}
                         r={hoverAxis === i ? 6 : 4}
-                        fill="#D64F66"
+                        fill="#6366F1"
                         stroke="#fff" strokeWidth={hoverAxis === i ? 1.5 : 0}
                         filter={hoverAxis === i ? "url(#neonGlow)" : undefined}
                         className="transition-all duration-150 pointer-events-none"
@@ -182,7 +187,7 @@ export default function Landing() {
                     <text
                       key={i}
                       x={l.x} y={l.y} textAnchor={l.anchor}
-                      className={`transition-colors duration-150 ${hoverAxis === i ? "fill-garnet-400" : "fill-navy-300"}`}
+                      className={`transition-colors duration-150 ${hoverAxis === i ? "fill-indigo-400" : "fill-navy-300"}`}
                       style={{ font: "600 10px Inter, sans-serif", letterSpacing: "0.04em", textTransform: "uppercase" }}
                     >
                       {AXES[i].label}
@@ -222,14 +227,14 @@ export default function Landing() {
       {/* ---------------- SCORECARD / ROUNDS ---------------- */}
       <section className="bg-white dark:bg-navy-900 border-y border-navy-100 dark:border-navy-800">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <p className="text-xs font-semibold uppercase tracking-wider text-garnet-500 mb-3">What the panel measures</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-indigo-500 mb-3">What the panel measures</p>
           <h2 className="font-display text-2xl sm:text-3xl font-bold text-navy-900 dark:text-white mb-10 max-w-2xl">
             Four categories, one readiness score — mapped straight from the radar above.
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {SCORECARD.map((s) => (
-              <Link key={s.title} to={s.to} className="group rounded-2xl border border-navy-100 dark:border-navy-800 p-5 hover:border-garnet-400 hover:shadow-card-hover transition-all">
-                <span className="w-10 h-10 rounded-lg bg-navy-900 dark:bg-navy-800 flex items-center justify-center mb-4 group-hover:bg-garnet-600 transition-colors">
+              <Link key={s.title} to={s.to} className="group rounded-2xl border border-navy-100 dark:border-navy-800 p-5 hover:border-indigo-400 hover:shadow-card-hover transition-all">
+                <span className="w-10 h-10 rounded-lg bg-navy-900 dark:bg-navy-800 flex items-center justify-center mb-4 group-hover:bg-indigo-600 transition-colors">
                   <s.icon size={17} className="text-white" />
                 </span>
                 <h3 className="font-display font-semibold text-navy-900 dark:text-gray-100 mb-1.5">{s.title}</h3>
@@ -242,7 +247,7 @@ export default function Landing() {
 
       {/* ---------------- FEATURES ---------------- */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <p className="text-xs font-semibold uppercase tracking-wider text-garnet-500 mb-3">Under the panel</p>
+        <p className="text-xs font-semibold uppercase tracking-wider text-indigo-500 mb-3">Under the panel</p>
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-navy-900 dark:text-white mb-10 max-w-2xl">
           Every reading on the instrument traces back to a rule you can name.
         </h2>
@@ -253,12 +258,12 @@ export default function Landing() {
               className="group relative rounded-2xl bg-white dark:bg-navy-900 border border-navy-100 dark:border-navy-800 p-5 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-card-hover hover:border-transparent"
             >
               {/* gradient wash that fades in on hover */}
-              <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-garnet-500/[0.07] via-transparent to-gold-400/[0.06]" />
+              <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-indigo-500/[0.07] via-transparent to-violet-400/[0.06]" />
               {/* gradient border glow */}
-              <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ boxShadow: "inset 0 0 0 1px rgba(196,41,63,0.35)" }} />
+              <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ boxShadow: "inset 0 0 0 1px rgba(99,102,241,0.35)" }} />
 
-              <div className="relative w-10 h-10 rounded-lg bg-garnet-500/10 flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:bg-garnet-500/15">
-                <f.icon size={18} className="text-garnet-500" />
+              <div className="relative w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:bg-indigo-500/15">
+                <f.icon size={18} className="text-indigo-500" />
               </div>
               <h3 className="relative font-display font-semibold text-navy-900 dark:text-gray-100 mb-1">{f.title}</h3>
               <p className="relative text-sm text-navy-500 dark:text-navy-400">{f.desc}</p>
@@ -276,7 +281,10 @@ export default function Landing() {
           <p className="text-navy-300 mb-8 max-w-xl mx-auto">
             Register, take your first adaptive round, and watch the radar fill in from there.
           </p>
-          <Link to="/register" className="inline-flex items-center gap-2 rounded-xl bg-cta-gradient hover:bg-cta-gradient-hover px-7 py-3.5 text-base font-semibold text-white shadow-glow-garnet hover:shadow-glow-garnet-lg hover:-translate-y-0.5 transition-all duration-200">
+          <Link
+            to="/register"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all duration-200"
+          >
             Create free account <ArrowRight size={16} />
           </Link>
           <p className="mt-4 text-xs text-navy-500">No credit card. No external AI subscription. Runs on your own database.</p>

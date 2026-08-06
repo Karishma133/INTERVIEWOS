@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
   registerUser, loginUser, getMe, forgotPassword, resetPassword, verifyEmail, resendVerification,
+  updateProfile, changePassword,
 } = require("../controllers/authController");
 const {
   githubAuthRedirect, githubAuthCallback, googleAuthRedirect, googleAuthCallback,
@@ -11,6 +12,8 @@ const { protect } = require("../middleware/authMiddleware");
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/me", protect, getMe);
+router.put("/profile", protect, updateProfile);
+router.put("/change-password", protect, changePassword);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
 router.get("/verify-email/:token", verifyEmail);

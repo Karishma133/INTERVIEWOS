@@ -58,6 +58,7 @@ const registerUser = async (req, res) => {
       publicSlug: user.publicSlug,
       emailVerified: user.emailVerified,
       eloRating: user.eloRating,
+      hasPassword: true,
       devVerificationLink, // present only when SMTP isn't configured, for dev/testing convenience
       token: generateToken(user._id),
     });
@@ -91,6 +92,7 @@ const loginUser = async (req, res) => {
       publicSlug: user.publicSlug,
       emailVerified: user.emailVerified,
       eloRating: user.eloRating,
+      hasPassword: !!user.password,
       token: generateToken(user._id),
     });
   } catch (err) {
@@ -100,7 +102,12 @@ const loginUser = async (req, res) => {
 
 // GET /api/auth/me
 const getMe = async (req, res) => {
-  res.json(req.user);
+  // authMiddleware already strips `password` off req.user, so we can't
+  // read it there — a tiny separate query just checks whether one exists.
+  const passwordCheck = await User.findById(req.user._id).select("password");
+  const user = req.user.toObject();
+  user.hasPassword = !!passwordCheck?.password;
+  res.json(user);
 };
 
 // POST /api/auth/forgot-password  { email }
@@ -173,7 +180,58 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getMe, forgotPassword, resetPassword, verifyEmail, resendVerification, isEmailConfigured };
+// PUT /api/auth/profile  { name, techStack }
+const updateProfile = async (req, res) => {
+  try {
+    const { name, techStack } = req.body;
+    if (!name || !name.trim()) {
+      return res.status(400).json({ message: "Name is required" });
+    }
+    const user = await User.findById(req.user._id);
+    user.name = name.trim();
+    if (Array.isArray(techStack)) user.techStack = techStack;
+    await user.save();
+    const clean = user.toObject();
+    delete clean.password;
+    res.json(clean);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// PUT /api/auth/change-password  { currentPassword, newPassword }
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ message: "New password must be at least 6 characters" });
+    }
+    const user = await User.findById(req.user._id);
+
+    // OAuth-only accounts (no password set yet) can set one without
+    // proving a "current" password, since there isn't one to prove.
+    if (user.password) {
+      if (!currentPassword) {
+        return res.status(400).json({ message: "Current password is required" });
+      }
+      const matches = await user.matchPassword(currentPassword);
+      if (!matches) {
+        return res.status(400).json({ message: "Current password is incorrect" });
+      }
+    }
+
+    user.password = newPassword; // pre-save hook hashes it
+    await user.save();
+    res.json({ message: "Password updated successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = {
+  registerUser, loginUser, getMe, forgotPassword, resetPassword, verifyEmail, resendVerification,
+  isEmailConfigured, updateProfile, changePassword,
+};
 
 // GET /api/auth/verify-email/:token
 async function verifyEmail(req, res) {
