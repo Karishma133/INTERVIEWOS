@@ -277,7 +277,7 @@ export default function Landing() {
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-white mb-4">
             Put your readiness on the panel.
-          </h2>
+          </h2> 
           <p className="text-navy-300 mb-8 max-w-xl mx-auto">
             Register, take your first adaptive round, and watch the radar fill in from there.
           </p>
