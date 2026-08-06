@@ -16,9 +16,12 @@ module.exports = {
           600: "#2a4470", 700: "#1e3151", 800: "#16253d",
           900: "#0f1b2e", 950: "#0b1220",
         },
+        // Renamed from "garnet" to "indigo" accent — same shape/usage as
+        // before, now matching the app's real primary (indigo/violet)
+        // instead of the old pink/garnet the landing page shipped with.
         garnet: {
-          300: "#e8899a", 400: "#d64f66", 500: "#c4293f",
-          600: "#a81f33", 700: "#841829",
+          300: "#a5b4fc", 400: "#818cf8", 500: "#6366f1",
+          600: "#4f46e5", 700: "#4338ca",
         },
         gold: {
           300: "#e8cd82", 400: "#d9a83b", 500: "#c08f22", 600: "#9c7318",
@@ -36,12 +39,12 @@ module.exports = {
         card: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
         "card-hover": "0 8px 24px rgba(0,0,0,0.08)",
         panel: "0 40px 90px -25px rgba(11,18,32,0.45)",
-        "glow-garnet": "0 0 0 1px rgba(196,41,63,0.15), 0 10px 30px rgba(196,41,63,0.18)",
-        "glow-garnet-lg": "0 0 0 1px rgba(196,41,63,0.2), 0 14px 40px rgba(196,41,63,0.32)",
+        "glow-garnet": "0 0 0 1px rgba(99,102,241,0.15), 0 10px 30px rgba(99,102,241,0.18)",
+        "glow-garnet-lg": "0 0 0 1px rgba(99,102,241,0.2), 0 14px 40px rgba(99,102,241,0.32)",
       },
       backgroundImage: {
-        "cta-gradient": "linear-gradient(135deg, #d64f66 0%, #c4293f 55%, #a81f33 100%)",
-        "cta-gradient-hover": "linear-gradient(135deg, #e0637a 0%, #c4293f 55%, #b3213a 100%)",
+        "cta-gradient": "linear-gradient(135deg, #818cf8 0%, #6366f1 55%, #4338ca 100%)",
+        "cta-gradient-hover": "linear-gradient(135deg, #93a1fb 0%, #6366f1 55%, #4c3fd6 100%)",
       },
       keyframes: {
         drawin: { "0%": { strokeDashoffset: "700", opacity: 0 }, "100%": { strokeDashoffset: "0", opacity: 1 } },
