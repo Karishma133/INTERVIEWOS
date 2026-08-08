@@ -24,9 +24,6 @@ function NavDropdown({ label, links, openMenu, setOpenMenu }) {
   const isOpen = openMenu === label;
   const containerRef = useRef(null);
 
-  // Reliable "click outside to close" — avoids the onBlur+setTimeout race
-  // condition where a click on a dropdown Link could get swallowed by the
-  // menu closing before React Router's navigation registered.
   useEffect(() => {
     if (!isOpen) return;
     const handleClickOutside = (e) => {
@@ -43,19 +40,21 @@ function NavDropdown({ label, links, openMenu, setOpenMenu }) {
       <button
         onClick={() => setOpenMenu(isOpen ? null : label)}
         className={`hidden md:flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-          isOpen ? "bg-gray-100 dark:bg-gray-800 text-primary-600" : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+          isOpen
+            ? "bg-slate-100 text-indigo-600 dark:bg-slate-800/80 dark:text-indigo-400"
+            : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/60"
         }`}
       >
         {label} <span className={`text-[10px] transition-transform ${isOpen ? "rotate-180" : ""}`}>▾</span>
       </button>
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-52 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-card-hover py-1.5 z-50">
+        <div className="absolute top-full left-0 mt-1.5 w-52 rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700/80 dark:bg-slate-900 py-1.5 z-50">
           {links.map((l) => (
             <Link
               key={l.to}
               to={l.to}
               onClick={() => setOpenMenu(null)}
-              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+              className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:text-indigo-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/80 transition-colors"
             >
               <span>{l.icon}</span> {l.label}
             </Link>
@@ -75,21 +74,13 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Glassmorphism kicks in once the page has scrolled a little — the bar
-  // starts near-transparent over the hero and blurs/solidifies as content
-  // scrolls underneath it.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // The public landing page ("/") always renders a premium dark hero
-  // regardless of the app's light/dark toggle — so the navbar over it
-  // needs to always be dark too, or a light-mode visitor sees a white
-  // bar over a black hero (looks broken). Every other page still
-  // respects the normal theme toggle.
   const isLandingHero = !user && location.pathname === "/";
 
   const handleLogout = () => {
@@ -110,93 +101,106 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`sticky top-0 z-40 border-b transition-all duration-300 ${
-        isLandingHero
-          ? scrolled
-            ? "bg-navy-950/75 backdrop-blur-xl border-navy-800/70 shadow-lg shadow-black/10"
-            : "bg-navy-950/20 backdrop-blur-sm border-transparent"
-          : scrolled
-            ? "bg-white/75 dark:bg-gray-950/75 backdrop-blur-xl border-gray-100 dark:border-gray-800 shadow-sm"
-            : "bg-white/40 dark:bg-gray-950/40 backdrop-blur-sm border-transparent"
+      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+        scrolled
+          ? "bg-white/80 backdrop-blur-md border-b border-slate-200 shadow-sm dark:bg-slate-950/80 dark:border-slate-800/80 dark:shadow-lg dark:shadow-black/20"
+          : "bg-white/40 backdrop-blur-sm border-b border-transparent dark:bg-slate-950/40"
       }`}
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        {/* Brand Logo */}
         <Link
           to={user ? "/dashboard" : "/"}
-          className={`flex items-center gap-2 font-display font-bold text-xl shrink-0 ${isLandingHero ? "text-white" : "text-indigo-500"}`}
+          className="flex items-center gap-3 font-semibold text-xl tracking-tight text-slate-900 dark:text-slate-100 shrink-0"
         >
-          <span className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-sm">IO</span>
-          <span className="hidden sm:inline">InterviewOS</span>
+          <div className="h-9 w-9 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/30">
+            IO
+          </div>
+          <span className="hidden sm:inline">
+            Interview<span className="text-indigo-600 dark:text-indigo-400">OS</span>
+          </span>
         </Link>
 
         {user ? (
-          <div className="flex items-center gap-1">
-            <Link to="/dashboard" className="hidden md:inline px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Dashboard</Link>
-            <Link to="/interview" className="hidden md:inline px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Interview Room</Link>
-            <Link to="/room" className="hidden md:inline px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Collab Room</Link>
+          <div className="flex items-center gap-1.5">
+            <Link to="/dashboard" className="hidden lg:inline px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/60 transition-colors">
+              Dashboard
+            </Link>
+            <Link to="/interview" className="hidden lg:inline px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/60 transition-colors">
+              Interview Room
+            </Link>
+            <Link to="/room" className="hidden lg:inline px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/60 transition-colors">
+              Collab Room
+            </Link>
 
             <NavDropdown label="Practice" links={PRACTICE_LINKS} openMenu={openMenu} setOpenMenu={setOpenMenu} />
             <NavDropdown label="Compete" links={COMPETE_LINKS} openMenu={openMenu} setOpenMenu={setOpenMenu} />
             <NavDropdown label="Insights" links={INSIGHTS_LINKS} openMenu={openMenu} setOpenMenu={setOpenMenu} />
 
-            <Link to="/resume" className="hidden lg:inline px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Resume</Link>
+            <Link to="/resume" className="hidden xl:inline px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/60 transition-colors">
+              Resume
+            </Link>
 
             <button
               onClick={toggleTheme}
-              className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 ml-1"
+              className="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800/70 ml-2 transition-colors"
               aria-label="Toggle dark mode"
             >
               {theme === "dark" ? "☀️" : "🌙"}
             </button>
 
             {user.publicSlug && (
-              <Link to={`/u/${user.publicSlug}`} title="View/share your public profile"
-                className="hidden lg:inline text-xs text-gray-400 hover:text-primary-600 px-2 whitespace-nowrap">
-                {user.name} · <span className="text-primary-600 font-semibold">{user.currentLevel}</span>
+              <Link
+                to={`/u/${user.publicSlug}`}
+                title="View/share your public profile"
+                className="hidden xl:inline text-xs text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 px-2 whitespace-nowrap"
+              >
+                {user.name} · <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{user.currentLevel}</span>
               </Link>
             )}
 
             <Link
               to="/settings"
               title="Settings"
-              className="hidden md:flex w-9 h-9 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="hidden md:flex w-9 h-9 items-center justify-center rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800/70 transition-colors"
             >
               <SettingsIcon size={17} />
             </Link>
 
-            <button onClick={handleLogout} className="hidden md:inline-flex btn-outline !py-1.5 !px-3 ml-1">Logout</button>
+            <button
+              onClick={handleLogout}
+              className="hidden md:inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white transition-colors ml-1"
+            >
+              Logout
+            </button>
 
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
               aria-label="Menu"
             >
               {mobileOpen ? "✕" : "☰"}
             </button>
           </div>
         ) : (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               onClick={toggleTheme}
-              className={`w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 ${isLandingHero ? "text-gray-400 hover:!bg-gray-800" : "text-gray-500"}`}
+              className="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800/70 transition-colors"
               aria-label="Toggle dark mode"
             >
               {theme === "dark" ? "☀️" : "🌙"}
             </button>
             <Link
               to="/login"
-              className={isLandingHero
-                ? "inline-flex items-center justify-center gap-2 rounded-lg border border-navy-700 px-4 py-2.5 text-sm font-semibold text-gray-200 hover:bg-navy-800 transition-colors"
-                : "btn-outline !py-1.5 !px-3"}
+              className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
             >
               Login
             </Link>
             <Link
               to="/register"
-              className={isLandingHero
-                ? "inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all"
-                : "btn-primary !py-1.5 !px-3"}
+              className="inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-indigo-500/20 active:scale-95 transition-all"
             >
               Sign up
             </Link>
@@ -206,20 +210,25 @@ export default function Navbar() {
 
       {/* Mobile menu panel */}
       {user && mobileOpen && (
-        <div className="md:hidden border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 px-4 py-3 max-h-[70vh] overflow-y-auto">
-          <div className="grid grid-cols-2 gap-1">
+        <div className="md:hidden border-t border-slate-200 bg-white px-4 py-3 max-h-[70vh] overflow-y-auto dark:border-slate-800/80 dark:bg-slate-950">
+          <div className="grid grid-cols-2 gap-1.5">
             {allMobileLinks.map((l) => (
               <Link
                 key={l.to}
                 to={l.to}
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/80 transition-colors"
               >
                 <span>{l.icon}</span> {l.label}
               </Link>
             ))}
           </div>
-          <button onClick={handleLogout} className="btn-outline w-full mt-3">Logout</button>
+          <button
+            onClick={handleLogout}
+            className="w-full mt-3 rounded-lg border border-slate-200 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white transition-colors"
+          >
+            Logout
+          </button>
         </div>
       )}
     </nav>
