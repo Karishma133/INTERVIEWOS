@@ -82,14 +82,11 @@ const getQuestionById = async (req, res) => {
 // GET /api/questions  (list, for browsing / admin)
 const listQuestions = async (req, res) => {
   try {
-    const { topic, difficulty, company, search } = req.query;
+    const { topic, difficulty, company } = req.query;
     const filter = {};
     if (topic) filter.topic = topic;
     if (difficulty) filter.difficulty = difficulty;
     if (company) filter.companyTags = company;
-    if (search && search.trim()) {
-      filter.title = { $regex: search.trim(), $options: "i" }; // case-insensitive title search
-    }
 
     const questions = await Question.find(filter).select("title topic difficulty companyTags");
     res.json(questions);
@@ -123,43 +120,4 @@ const createQuestion = async (req, res) => {
   }
 };
 
-// POST /api/questions/:id/bookmark  — toggles the question in the user's saved list
-const toggleBookmark = async (req, res) => {
-  try {
-    const question = await Question.findById(req.params.id).select("_id");
-    if (!question) return res.status(404).json({ message: "Question not found" });
-
-    const user = req.user;
-    const idx = user.bookmarkedQuestions.findIndex((qId) => qId.toString() === question._id.toString());
-    let bookmarked;
-    if (idx >= 0) {
-      user.bookmarkedQuestions.splice(idx, 1);
-      bookmarked = false;
-    } else {
-      user.bookmarkedQuestions.push(question._id);
-      bookmarked = true;
-    }
-    await user.save();
-    res.json({ bookmarked });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-// GET /api/questions/bookmarked/list — full details of everything the user saved
-const listBookmarked = async (req, res) => {
-  try {
-    const user = await req.user.populate({
-      path: "bookmarkedQuestions",
-      select: "title topic difficulty companyTags",
-    });
-    res.json(user.bookmarkedQuestions);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-module.exports = {
-  getNextQuestion, getQuestionById, listQuestions, listCompanies, createQuestion,
-  toggleBookmark, listBookmarked,
-};
+module.exports = { getNextQuestion, getQuestionById, listQuestions, listCompanies, createQuestion };
