@@ -1,5 +1,6 @@
 const Question = require("../models/Question");
 const Submission = require("../models/Submission");
+const User = require("../models/User");
 
 /**
  * Finds the user's weakest topic (lowest accuracy, min 2 attempts) from
@@ -120,4 +121,49 @@ const createQuestion = async (req, res) => {
   }
 };
 
-module.exports = { getNextQuestion, getQuestionById, listQuestions, listCompanies, createQuestion };
+// GET /api/questions/bookmarked/list — questions the user has bookmarked
+const listBookmarked = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate(
+      "bookmarkedQuestions",
+      "title topic difficulty companyTags"
+    );
+    res.json(user.bookmarkedQuestions || []);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// POST /api/questions/:id/bookmark — add/remove a question from the user's bookmarks
+const toggleBookmark = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    const questionId = req.params.id;
+    const alreadyBookmarked = user.bookmarkedQuestions.some(
+      (id) => id.toString() === questionId
+    );
+
+    if (alreadyBookmarked) {
+      user.bookmarkedQuestions = user.bookmarkedQuestions.filter(
+        (id) => id.toString() !== questionId
+      );
+    } else {
+      user.bookmarkedQuestions.push(questionId);
+    }
+
+    await user.save();
+    res.json({ bookmarked: !alreadyBookmarked });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = {
+  getNextQuestion,
+  getQuestionById,
+  listQuestions,
+  listCompanies,
+  createQuestion,
+  listBookmarked,
+  toggleBookmark,
+};
