@@ -1,39 +1,47 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { api, saveSession } from "../services/api";
 import FloatingInput from "../components/FloatingInput";
 import SocialLoginButtons from "../components/SocialLoginButtons";
-import { useToast } from "../context/ToastContext";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState(false);
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const toast = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Google/GitHub land back here as /login?oauth_token=... (or
-  // ?oauth_error=...) after the backend finishes the provider handshake.
+  // Handles the redirect back from Google/GitHub OAuth: the backend sends
+  // us here with either ?oauth_token=... (success) or ?oauth_error=...
+  // (failure). We stash the token, then fetch the full profile via /auth/me
+  // the same way a normal email/password login populates the session.
   useEffect(() => {
     const oauthToken = searchParams.get("oauth_token");
     const oauthError = searchParams.get("oauth_error");
+
+    if (oauthError) {
+      setError(oauthError);
+      setSearchParams({}, { replace: true });
+      return;
+    }
+
     if (oauthToken) {
-      (async () => {
-        try {
-          localStorage.setItem("io_token", oauthToken); // api.me() reads the token from here
-          const me = await api.me();
-          saveSession({ token: oauthToken, user: me });
-          toast.success(`Welcome back, ${me.name?.split(" ")[0] || "there"}!`);
+      setOauthLoading(true);
+      localStorage.setItem("io_token", oauthToken);
+
+      api
+        .me()
+        .then((user) => {
+          saveSession({ token: oauthToken, user });
           navigate("/dashboard", { replace: true });
-        } catch {
+        })
+        .catch(() => {
           localStorage.removeItem("io_token");
           setError("Social login succeeded but fetching your profile failed. Please try again.");
-        }
-      })();
-    } else if (oauthError) {
-      setError(oauthError);
-      toast.error(oauthError);
+          setSearchParams({}, { replace: true });
+        })
+        .finally(() => setOauthLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -44,12 +52,19 @@ export default function Login() {
     try {
       const data = await api.login(form);
       saveSession({ token: data.token, user: data });
-      toast.success(`Welcome back, ${data.name?.split(" ")[0] || "there"}!`);
       navigate("/dashboard");
     } catch (err) {
       setError(err.message);
     } finally { setLoading(false); }
   };
+
+  if (oauthLoading) {
+    return (
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
+        <p className="text-sm text-navy-500 dark:text-gray-400">Finishing sign-in…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
