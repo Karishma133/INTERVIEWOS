@@ -46,6 +46,8 @@ export const api = {
   },
   listCompanies: () => request("/questions/companies/list"),
   getQuestion: (id) => request(`/questions/${id}`),
+  listBookmarked: () => request("/questions/bookmarked/list"),
+  toggleBookmark: (id) => request(`/questions/${id}/bookmark`, { method: "POST" }),
 
   submitCode: (payload) => request("/judge/submit", { method: "POST", body: payload }),
 
