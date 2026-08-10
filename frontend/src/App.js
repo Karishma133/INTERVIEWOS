@@ -25,6 +25,7 @@ import VerifyEmail from "./pages/VerifyEmail";
 import NotFound from "./pages/NotFound";
 import { getCurrentUser } from "./services/api";
 import { ThemeProvider } from "./context/ThemeContext";
+import { ToastProvider } from "./context/ToastContext";
 
 function PrivateRoute({ children }) {
   const user = getCurrentUser();
@@ -35,35 +36,37 @@ export default function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password/:token" element={<ResetPassword />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/u/:slug" element={<PublicProfile />} />
-            <Route path="/verify-email/:token" element={<VerifyEmail />} />
+        <ToastProvider>
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password/:token" element={<ResetPassword />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/u/:slug" element={<PublicProfile />} />
+              <Route path="/verify-email/:token" element={<VerifyEmail />} />
 
-            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-            <Route path="/interview" element={<PrivateRoute><InterviewRoom /></PrivateRoute>} />
-            <Route path="/room" element={<PrivateRoute><CollabRoom /></PrivateRoute>} />
-            <Route path="/analytics" element={<PrivateRoute><Analytics /></PrivateRoute>} />
-            <Route path="/scorecard" element={<PrivateRoute><Scorecard /></PrivateRoute>} />
-            <Route path="/roadmap" element={<PrivateRoute><Roadmap /></PrivateRoute>} />
-            <Route path="/aptitude" element={<PrivateRoute><AptitudeQuiz /></PrivateRoute>} />
-            <Route path="/situational" element={<PrivateRoute><SituationalJudgment /></PrivateRoute>} />
-            <Route path="/resume" element={<PrivateRoute><ResumeBuilder /></PrivateRoute>} />
-            <Route path="/companies" element={<PrivateRoute><CompanyPrep /></PrivateRoute>} />
-            <Route path="/questions" element={<PrivateRoute><Questions /></PrivateRoute>} />
-            <Route path="/leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
-            <Route path="/multiplayer" element={<PrivateRoute><Multiplayer /></PrivateRoute>} />
+              <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+              <Route path="/interview" element={<PrivateRoute><InterviewRoom /></PrivateRoute>} />
+              <Route path="/room" element={<PrivateRoute><CollabRoom /></PrivateRoute>} />
+              <Route path="/analytics" element={<PrivateRoute><Analytics /></PrivateRoute>} />
+              <Route path="/scorecard" element={<PrivateRoute><Scorecard /></PrivateRoute>} />
+              <Route path="/roadmap" element={<PrivateRoute><Roadmap /></PrivateRoute>} />
+              <Route path="/aptitude" element={<PrivateRoute><AptitudeQuiz /></PrivateRoute>} />
+              <Route path="/situational" element={<PrivateRoute><SituationalJudgment /></PrivateRoute>} />
+              <Route path="/resume" element={<PrivateRoute><ResumeBuilder /></PrivateRoute>} />
+              <Route path="/companies" element={<PrivateRoute><CompanyPrep /></PrivateRoute>} />
+              <Route path="/questions" element={<PrivateRoute><Questions /></PrivateRoute>} />
+              <Route path="/leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
+              <Route path="/multiplayer" element={<PrivateRoute><Multiplayer /></PrivateRoute>} />
 
-            {/* Catch-all — must stay last */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+              {/* Catch-all — must stay last */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </ToastProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );
